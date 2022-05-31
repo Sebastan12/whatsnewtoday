@@ -10,3 +10,6 @@ Image ( von artikel beinhaltet ifnromationen)
 -other info
 
 https://stackoverflow.com/questions/51863155/do-we-need-to-upload-virtual-env-on-github-too
+
+You can easily generate this file with the following: pip freeze > requirements.txt
+You can then install the virtualenv packages on the target machine with: pip install -r requirements.txt
