@@ -42,12 +42,12 @@ for i in range(maximum_page_number + 1):
         print(url_prefix + listing['href'])
 
 print(len(article_list))
-
+amount_of_articles = len(article_list)
 
 #process once we have article page!
 #url = "https://www.waffengebraucht.at/munition/buechsenpatronen/65x68-aus-nachlass-65x68-repetierer-bockbuechse-thiersee-tirol--381198"
 
-for url in article_list:
+for idx, url in enumerate(article_list):
     soup = get_soup(url)
     article = soup.find('article')
 
@@ -58,11 +58,13 @@ for url in article_list:
     article.find_all("div", {"class": "panel panel-default"})[-1].decompose()
     currentHash = hashlib.sha224(article.prettify().encode('utf-8')).hexdigest()
     #to see all
-    print(article.prettify())
+    #print(article.prettify())
+    print("----Article " + str(idx+1) + "/" + str(amount_of_articles) + " ----")
     print(currentHash)
     print(article.h1.getText())
-    print(article.find("div", {"class": "panel-body"}).getText())
-    print(article.find("td", {"class": "classified-detail-value price"}).getText())
+    print("----END ARTICLE---")
+    #print(article.find("div", {"class": "panel-body"}).getText())
+    #print(article.find("td", {"class": "classified-detail-value price"}).getText())
     product = []
     product.append(currentHash)
     product.append(article.h1.getText())
