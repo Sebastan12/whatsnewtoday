@@ -37,7 +37,7 @@ product_list = []
 for i in range(maximum_page_number + 1):
     print ("-----PAGE-----" + str(i+1))
     url_prefix = "https://www.waffengebraucht.at"
-    for listing in get_soup(url_base + str(0)).find_all("a", {"class": "classified-teaser-title"}):
+    for listing in get_soup(url_base + str(i)).find_all("a", {"class": "classified-teaser-title"}):
         article_list.append(url_prefix + listing['href'])
         print(url_prefix + listing['href'])
 
@@ -49,9 +49,13 @@ amount_of_articles = len(article_list)
 
 for idx, url in enumerate(article_list):
     soup = get_soup(url)
-    article = soup.find('article')
-
-    #remove contact info - as we do not care for its changes
+    #nichtexistne artikel leiten auf hauptkategory zurück
+    #checke of kein title vorhanden ist
+    print(url)
+    if soup.find('article') is None:
+        print("--ENTRY DOES NOT EXIST--")
+        continue
+    article = soup
     if len(article.find_all("div", {"class": "panel panel-default"})) > 2:
         print("EXCEPTION IN ARTICLE OR DESCRIPTION")
         quit()
