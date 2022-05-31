@@ -1,0 +1,12 @@
+1:n
+
+Artikel
+-Id
+-Url
+
+Image ( von artikel beinhaltet ifnromationen)
+-Checksum
+-date (today)
+-other info
+
+https://stackoverflow.com/questions/51863155/do-we-need-to-upload-virtual-env-on-github-too
