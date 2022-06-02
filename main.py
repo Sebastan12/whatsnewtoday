@@ -55,7 +55,7 @@ for idx, url in enumerate(article_list):
     if soup.find('article') is None:
         print("--ENTRY DOES NOT EXIST--")
         continue
-    article = soup
+    article = soup.find('article')
     if len(article.find_all("div", {"class": "panel panel-default"})) > 2:
         print("EXCEPTION IN ARTICLE OR DESCRIPTION")
         quit()

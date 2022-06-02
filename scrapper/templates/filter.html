@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex justify-content-center py-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/scrapper/filter/" class="nav-link active" aria-current="page">Filter</a></li>
+            </ul>
+        </header>
+    </div>
+    <div class="container">
+      <div class="row">
+          <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get">
+                        <input type="text" class="form-control" value="{{title}}" placeholder="Titel" name="title">
+                        <input type="text" class="form-control" value="{{description}}" placeholder="Beschreibung" name="description">
+                        <div class="row">
+                            <div class="form-group col-lg-6">
+                                <input type="number" class="form-control" value="{{min_price|floatformat}}" placeholder="Min €" name="min_price" min="0"  step="0.01">
+                            </div>
+                            <div class="form-group col-lg-1"><p>-</p></div>
+                            <div class="form-group col-lg-4">
+                                <input type="number" class="form-control" value="{{max_price|floatformat}}" placeholder="Max €"name="max_price" min="0"  step="0.01">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-6">
+                                <select class="form-select form-select-sm" name="selection">
+                                    <option value="all" {% if choice == 'all' %} selected {% endif %}>
+                                    Alle
+                                    </option>
+                                    <option value="new" {% if choice == 'new' %} selected {% endif %}>
+                                    Neu
+                                    </option>
+                                    <option value="changed" {% if choice == 'changed' %} selected {% endif %}>
+                                    Geändert
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <select class="form-select form-select-sm" name="searching">
+                                    <option value="buy" {% if searching == 'buy' %} selected {% endif %}>
+                                    Kaufe
+                                    </option>
+                                    <option value="search" {% if searching == 'search' %} selected {% endif %}>
+                                    Suche
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Suche Starten</button>
+                        <p> Ergebnisse: {{results|length}}</p>
+                    </form>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+          <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table" data-toggle="table">
+                      <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Beschreibung</th>
+                            <th scope="col">Preis</th>
+                            {% if choice != 'new' %}
+                            <th scope="col">Preis Alt</th>
+                            <th scope="col">Einträge</th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td><a href="{{result.0.article_id.url}}" target="_blank">{{result.0.title}}</a></td>
+                            <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="{{result.0.description}}">B</button>
+                            </td>
+                            <td>{{result.0.price}} €</td>
+                            {% if choice != 'new' %}
+                                {% if result|length > 1 and result.1.price != result.0.price %}
+                                    <td>{{result.1.price}} €</td>
+                                {% else %}
+                                    <td>--</td>
+                                {% endif %}
+                                <td>{{ result|length }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+<script>
+    $( document ).ready(function() {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    });
+</script>
+</body>
+</html>
