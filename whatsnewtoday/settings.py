@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3owtis94q%%(gl^6^@pc!p&*r2j9#0y=gxp!tbv4l&n=c3*ds7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["194.233.163.248", "127.0.0.1", "argus-observer.at"]
 
 
 # Application definition
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'playground',
     'scrapper',
-    'django_filters'
+    'django_filters',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -78,10 +79,10 @@ WSGI_APPLICATION = 'whatsnewtoday.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'whatsnewtoday',
+        'NAME': 'django-app-db',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
@@ -127,3 +128,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#crontab only works on UNIX
+CRONJOBS = [
+    ('* * * * *', 'scrapper.cron.hoi', '>> /data/cron/cron.log 2>&1')
+]

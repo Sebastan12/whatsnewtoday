@@ -12,125 +12,22 @@ from bs4 import BeautifulSoup
 import time
 from django.db.models.aggregates import Count
 
-#helpers
+def hoi():
+    print("HOI CRON RUNNING!!!!!")
+
+
 def get_soup(current_url):
     request = requests.get(current_url)
     return BeautifulSoup(request.text, "lxml")
 
-# Create your views here.
 
-
-def say_hello(request):
-    return render(request, 'hello.html', {'name': 'Mosh'})
-
-def filter(request):
-    context = {}
-    start_time = time.time()
-
-    try:
-        min_price = float(request.GET.get('min_price', 0))
-    except:
-        min_price = 0
-
-    context['min_price'] = min_price
-
-    try:
-        max_price = float(request.GET.get('max_price', 100000))
-    except:
-        max_price = 100000
-
-    context['max_price'] = max_price
-
-
-    choice = request.GET.get('selection', "newandchanged")
-    context['choice'] = choice
-
-    searching = request.GET.get('searching', "buy")
-    context['searching'] = searching
-
-    searching_for = False
-
-    if searching == "search":
-        searching_for = True
-
-    #today_entries = (Image.objects.filter(created_at__gte=timezone.now().replace(hour=0, minute=0, second=0))).order_by('article_id')
-    if choice == "all":
-        articles_today = Image.objects.filter(price__range=(min_price, max_price), is_searching_for=searching_for).values('article_id').annotate(total=Count('article_id')).order_by('total')
-    else:
-        articles_today = Image.objects.filter(price__range=(min_price, max_price), is_searching_for=searching_for, created_at__gte=timezone.now().replace(hour=0, minute=0, second=0)).values(
-            'article_id').annotate(total=Count('article_id')).order_by('total')
-    today_index = []
-    for article_today in articles_today:
-        today_index.append(Image.objects.filter(article_id=article_today['article_id']).order_by("-created_at"))
-
-    results = []
-    if choice == "newandchanged":
-        results = today_index
-
-
-    if choice == "new":
-        for index in today_index:
-            if len(index) == 1:
-                results.append(index)
-
-    if choice == "changed":
-        for index in today_index:
-            if len(index) > 1:
-                results.append(index)
-
-    title = request.GET.get('title', "")
-    context['title'] = title
-    if title != "":
-        print("SEARCH")
-        search_result = []
-        for result in results:
-            if title.lower() in result[0].title.lower():
-                search_result.append(result)
-        results = search_result
-
-    description = request.GET.get('description', "")
-    context['description'] = description
-    if description != "":
-        search_result = []
-        for result in results:
-            if description.lower() in result[0].description.lower():
-                search_result.append(result)
-        results = search_result
-
-
-    context['results'] = results
-    print("--- %s seconds ---" % (time.time() - start_time))
-    return render(request, 'filter.html', context)
-
-
-def morethanone(request):
-    context = {}
-    entry_list = []
-    entries = 0
-    start_time = time.time()
-
-    today_entries = Image.objects.filter(created_at__gte=timezone.now().replace(hour=0,minute=0,second=0))
-    if today_entries:
-        for today_entry in today_entries:
-            if len(Image.objects.filter(article_id=today_entry.article_id)) == 1:
-                continue
-            print(today_entry.article_id.url)
-            print(today_entry.created_at)
-            entries = entries + 1
-    print("Entries found: " + str(entries))
-    print(timezone.now().replace(hour=0, minute=0, second=0))
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    context['links'] = entry_list
-    return render(request, 'links.html', context)
-
-def scrape(request):
+def cron_scrape():
     context = {}
     start_time = time.time()
 
     # get number of total articles
     url_base = "https://www.waffengebraucht.at/?page="
-
+    print("starting cron - scraping page " + url_base)
     # find max page number
     limiter_soup = get_soup(url_base + "100000000000000000")
     pagination = limiter_soup.find("ul", {"class": "pagination"})
@@ -168,10 +65,11 @@ def scrape(request):
                         # DEBUG
                         article_list.append("NO Change: " + article_url)
 
+    print("--SUMMARY--")
+    context['links'] = article_list
+    print("--Done!--")
     print("Entries: " + str(entries))
     print("--- %s seconds ---" % (time.time() - start_time))
-    context['links'] = article_list
-    return render(request, 'links.html', context)
 
 
 def has_changed_since_last_time(articles_object):

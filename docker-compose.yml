@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    restart: always
+    ports:
+      - 80:8000
+    image: sebastan12/augur
+    container_name: django_container
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./data/cron:/data/cron
+    depends_on:
+      - "db"
+  db:
+    image: mysql
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_DATABASE: "django-app-db"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - ./data/mysql/db:/var/lib/mysql
+    ports:
+      - "6033:3306"
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 300M

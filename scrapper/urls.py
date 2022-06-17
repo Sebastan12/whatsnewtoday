@@ -6,5 +6,5 @@ urlpatterns = [
     path('hello/', views.say_hello),
     path('scrape/', views.scrape),
     path('morethanone/', views.morethanone),
-    path('filter/', views.filter)
+    path('', views.filter)
 ]
