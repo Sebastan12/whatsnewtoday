@@ -5,4 +5,4 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 RUN apt-get update -y
 RUN apt-get install -y cron
-COPY . .
+COPY . .docke

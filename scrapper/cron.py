@@ -11,6 +11,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import time
 from django.db.models.aggregates import Count
+import datetime
 
 def hoi():
     print("HOI CRON RUNNING!!!!!")
@@ -27,7 +28,7 @@ def cron_scrape():
 
     # get number of total articles
     url_base = "https://www.waffengebraucht.at/?page="
-    print("starting cron - scraping page " + url_base)
+    print(str(datetime.datetime.now()) + " START CRON SCRAPE - scraping page: " + url_base)
     # find max page number
     limiter_soup = get_soup(url_base + "100000000000000000")
     pagination = limiter_soup.find("ul", {"class": "pagination"})
@@ -70,6 +71,7 @@ def cron_scrape():
     print("--Done!--")
     print("Entries: " + str(entries))
     print("--- %s seconds ---" % (time.time() - start_time))
+    print(str(datetime.datetime.now()) + " END CRON SCRAPE ")
 
 
 def has_changed_since_last_time(articles_object):

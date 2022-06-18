@@ -131,5 +131,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #crontab only works on UNIX
 CRONJOBS = [
-    ('* * * * *', 'scrapper.cron.hoi', '>> /data/cron/cron.log 2>&1')
+    ('0 4,16 * * *', 'scrapper.cron.cron_scrape', '>> /data/cron/cron.log 2>&1')
 ]

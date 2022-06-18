@@ -7,7 +7,8 @@ services:
       - 80:8000
     image: sebastan12/augur
     container_name: django_container
-    command: python manage.py runserver 0.0.0.0:8000
+    #order is important -> as runserver wil lrun until stopped thus cron service would never get started
+    command: bash -c "service cron start && python manage.py crontab add  && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./data/cron:/data/cron
     depends_on:
