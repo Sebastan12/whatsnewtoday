@@ -130,6 +130,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #crontab only works on UNIX
+#still need to manually create the cron.log file
 CRONJOBS = [
     ('0 4,16 * * *', 'scrapper.cron.cron_scrape', '>> /data/cron/cron.log 2>&1')
 ]
